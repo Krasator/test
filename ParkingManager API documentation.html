@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)https://mobinet.ghtrack.com/ParkingManager/api/doc/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+			<meta charset="utf-8">
+			<title>ParkingManager API documentation</title>
+         <script src="./ParkingManager API documentation_files/json-syntax.js"></script>
+			<link rel="stylesheet" href="https://mobinet.ghtrack.com/ParkingManager/api/doc/style.css">
+		</head>
+      
+      
+		<body onload="formatAllJson()">
+      
+      <img class="logo" src="./ParkingManager API documentation_files/gatehouse_logo.png">
+      
+      <h1>ParkingManager API documentation</h1>
+      <div class="copyright">© 2014 <a href="http://www.gatehouse.dk/">GateHouse A/S</a></div>
+      
+      <p><a href="https://mobinet.ghtrack.com/ParkingManager/api/doc/release-notes.html">Release notes</a></p>
+
+      <p>
+      The service is implemented as a RESTful service over HTTPS at
+      <a href="https://mobinet.ghtrack.com/ParkingManager">https://mobinet.ghtrack.com/ParkingManager/api</a>.
+      </p>
+
+      <p>
+      User authentication is HTTP Basic Authentication and thus the user name and password are encoded with base64 which gives
+      no security with regards the password confidentiality, but since HTTPS is used, everything is encrypted. However, following best practices,
+      the password should be hashed with a secure hash function by the client before transmission. A hashing algorithm should be aggreed
+      upon. Suggested hashing algorithms are PBKDF2, BCrypt and SCrypt.
+      </p>
+      
+      <p>
+      Input and output data is encoded in JSON as parsers are widely available and the format is concise and therefore useful for
+      mobile applications. The HTTP header Content-Type must be set to "application/json" whenever the body contains data.
+      The only acceptable encoding is UTF-8.
+      </p>
+      
+      <p>The HTTP header "X-HTTP-Method-Override" is supported.</p>
+      
+      <p>
+      Succesfull function calls to the API returns with a HTTP status code in the range 200 to 299 and the response data will be valid.
+      In general, unsuccesfull calls will return appropriate HTTP response codes indicating a cause or type of error and the response data will contain a JSON
+      object containing an <span class="verb">errors</span> property of array type containing strings describing the error.
+      </p>
+      
+      
+ 
+      <h3>GET /ParkingManager/api/Info</h3>
+      <p>Get server information.</p>
+      <p>Request body parameters: none</p>
+      <h4>Example response body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"version":</span> <span class="jsonString">"0.5.0"</span>,
+   <span class="jsonKey">"serverTs":</span> <span class="jsonString">"2014-12-04T10:15:38.288Z"</span>,
+   <span class="jsonKey">"serviceStartupTs":</span> <span class="jsonString">"2014-12-04T10:15:30.550Z"</span>,
+   <span class="jsonKey">"serviceUptime":</span> <span class="jsonString">"0 days 00:04:07.0738"</span>,
+   <span class="jsonKey">"osUptime":</span> <span class="jsonString">"5 days 23:01:24.5825"</span>
+}</pre>
+      <h4>Response parameters</h4>
+      <div class="paramlist">
+         <div>
+            <span class="paramname">version</span>
+            <span class="paramtypespec">string</span>
+            <p>Version of the server software.</p>
+         </div>
+         <div>
+            <span class="paramname">serverTs</span>
+            <span class="paramtypespec">string</span>
+            <p>Current server time in ISO8601 extended format.</p>
+         </div>
+         <div>
+            <span class="paramname">serviceStartupTs</span>
+            <span class="paramtypespec">string</span>
+            <p>Server time when service software was started. (Admins only.)</p>
+         </div>
+         <div>
+            <span class="paramname">serviceUptime</span>
+            <span class="paramtypespec">string</span>
+            <p>The time duration since service software was started. (Admins only.)</p>
+         </div>
+         <div>
+            <span class="paramname">osUptime</span>
+            <span class="paramtypespec">string</span>
+            <p>The time duration since OS was started. (Admins only.)</p>
+         </div>
+      </div>
+      
+      
+      
+      <h3>GET /ParkingManager/api/DistinguishedSigns[/&lt;ID&gt;]</h3>
+      <p>
+      Get list of <a href="http://www.unece.org/trans/roadsafe/distinguishing_signs.html">distinguished signs</a>.
+      </p>
+      <p>
+      The distinguished sign is used in combination with the license plate to form a unique identification of a vehicle. This is
+      necessary because license plates are not unique across national schemes. When the function is called without an ID, a list of all
+      distinguished signs with their english names is returned. If an ID is provided in the URL, the response will contain
+      a list with only the corresponding distinguished sign. Distinguished signs are identified by the distinguished sign
+      itself as an uppercase string, e.g. "DK", "S", "F", "D".
+      </p>
+      <h4>Example response body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"fields":</span> [
+      <span class="jsonString">"distinguishedSign"</span>,
+      <span class="jsonString">"name"</span>
+   ],
+   <span class="jsonKey">"distinguishedSigns":</span> [
+      [
+         <span class="jsonString">"DK"</span>,
+         <span class="jsonString">"Denmark"</span>
+      ],
+      [
+         <span class="jsonString">"G"</span>,
+         <span class="jsonString">"Germany"</span>
+      ],
+      [
+         <span class="jsonString">"F"</span>,
+         <span class="jsonString">"France"</span>
+      ]
+   ]
+}</pre>
+      
+      
+ 
+      <h3>GET /ParkingManager/api/UserAccounts[/&lt;ID&gt;]</h3>
+      <p>
+      Get list of user accounts.
+      </p>
+      <p>
+      When a user with administrator role calls this function return a list of all user accounts or, if an id is provided in the URL, a single
+      user account, will be returned. All other users will receive only data for their own account, i.e. all other accounts are filtered out.
+      </p>
+      <p>    
+      The id is an integer greater than 0.
+      </p>
+      <p>Request body parameters: none</p>
+      <h4>Example response body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"fields":</span> [
+      <span class="jsonString">"userId"</span>,
+      <span class="jsonString">"loginName"</span>,
+      <span class="jsonString">"language"</span>,
+      <span class="jsonString">"adminRole"</span>,
+      <span class="jsonString">"parkingAttandantRole"</span>,
+      <span class="jsonString">"parkingUserRole"</span>,
+      <span class="jsonString">"disabled"</span>,
+      <span class="jsonString">"email"</span>,
+      <span class="jsonString">"firstName"</span>,
+      <span class="jsonString">"lastName"</span>,
+      <span class="jsonString">"addressStreet"</span>,
+      <span class="jsonString">"addressPostalCode"</span>,
+      <span class="jsonString">"addressCity"</span>,
+      <span class="jsonString">"addressCountryCode"</span>
+   ],
+   <span class="jsonKey">"userAccounts":</span> [
+      [
+         <span class="jsonNumber">3</span>,
+         <span class="jsonString">"test01"</span>,
+         <span class="jsonString">"da-DK"</span>,
+         <span class="jsonBoolean">false</span>,
+         <span class="jsonBoolean">false</span>,
+         <span class="jsonBoolean">true</span>,
+         <span class="jsonBoolean">false</span>,
+         <span class="jsonString">"one@example.com"</span>,
+         <span class="jsonString">"Test"</span>,
+         <span class="jsonString">"One"</span>,
+         <span class="jsonString">"Testvej 1"</span>,
+         <span class="jsonString">"9999"</span>,
+         <span class="jsonString">"Testby"</span>,
+         <span class="jsonString">"DK"</span>
+      ]
+   ]
+}</pre>
+      
+      
+      
+      
+      <h3>GET /ParkingManager/api/CarParks[/&lt;ID&gt;]</h3>
+      <p>
+      Get list of car parks.
+      </p>
+      <p>
+      This call will return a list of all car parks or, if an id is provided in the URL, a single car park.
+      The id is an integer greater than 0.
+      </p>
+      <h4>Request body parameters</h4>
+      <p>none</p>
+      <h4>Example response body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"fields":</span> [
+      <span class="jsonString">"carParkId"</span>,
+      <span class="jsonString">"name"</span>,
+      <span class="jsonString">"serviceUrl"</span>,
+      <span class="jsonString">"serviceId"</span>,
+      <span class="jsonString">"description"</span>,
+      <span class="jsonString">"position"</span>,
+      <span class="jsonString">"geometry"</span>,
+      <span class="jsonString">"timezone"</span>,
+      <span class="jsonString">"cancelGraceSecs"</span>,
+      <span class="jsonString">"openingHours"</span>,
+      <span class="jsonString">"paymentParking"</span>,
+      <span class="jsonString">"paymentManaged"</span>,
+      <span class="jsonString">"priceInfo"</span>,
+      <span class="jsonString">"limitedTimeParking"</span>,
+      <span class="jsonString">"limitedTimeInformation"</span>,
+      <span class="jsonString">"parkingSlots"</span>,
+      <span class="jsonString">"services"</span>
+   ],
+   <span class="jsonKey">"carParks":</span> [
+      [
+         <span class="jsonNumber">2</span>,
+         <span class="jsonString">"C W Obel"</span>,
+         <span class="jsonNull">null</span>,
+         <span class="jsonNull">null</span>,
+         <span class="jsonString">"C W Obel"</span>,
+         {
+            <span class="jsonKey">"lat":</span> <span class="jsonNumber">57.052425</span>,
+            <span class="jsonKey">"lon":</span> <span class="jsonNumber">9.910837</span>
+         },
+         [
+            [
+               [
+                  [
+                     <span class="jsonNumber">9.913357385764911</span>,
+                     <span class="jsonNumber">57.052681208522216</span>
+                  ],
+                  [
+                     <span class="jsonNumber">9.913298318899704</span>,
+                     <span class="jsonNumber">57.05179277419636</span>
+                  ],
+                  [
+                     <span class="jsonNumber">9.913033549196742</span>,
+                     <span class="jsonNumber">57.052087668434716</span>
+                  ],
+                  [
+                     <span class="jsonNumber">9.913076130658983</span>,
+                     <span class="jsonNumber">57.052082955989555</span>
+                  ]
+               ]
+            ]
+         ],
+         <span class="jsonString">"Europe/Copenhagen"</span>,
+         <span class="jsonNull">null</span>,
+         [
+            {
+               <span class="jsonKey">"days":</span> <span class="jsonNumber">127</span>,
+               <span class="jsonKey">"from":</span> <span class="jsonString">"00:00:00"</span>,
+               <span class="jsonKey">"to":</span> <span class="jsonString">"24:00:00"</span>
+            }
+         ],
+         <span class="jsonBoolean">true</span>,
+         <span class="jsonNull">null</span>,
+         [
+            {
+               <span class="jsonKey">"days":</span> <span class="jsonNumber">127</span>,
+               <span class="jsonKey">"from":</span> <span class="jsonString">"08:00:00"</span>,
+               <span class="jsonKey">"to":</span> <span class="jsonString">"24:00:00"</span>,
+               <span class="jsonKey">"currencyCode":</span> <span class="jsonString">"DKK"</span>,
+               <span class="jsonKey">"amount":</span> <span class="jsonNumber">10</span>,
+               <span class="jsonKey">"duration":</span> <span class="jsonNumber">60</span>
+            }
+         ],
+         <span class="jsonBoolean">false</span>,
+         [],
+         {
+            <span class="jsonKey">"ts":</span> <span class="jsonString">"2014-12-03T11:58:06.957Z"</span>,
+            <span class="jsonKey">"capacity":</span> <span class="jsonNumber">376</span>,
+            <span class="jsonKey">"available":</span> <span class="jsonNumber">197</span>,
+            <span class="jsonKey">"disabledCapacity":</span> <span class="jsonNull">null</span>,
+            <span class="jsonKey">"disabledAvailable":</span> <span class="jsonNull">null</span>,
+            <span class="jsonKey">"priorityCapacity":</span> <span class="jsonNull">null</span>,
+            <span class="jsonKey">"priorityAvailable":</span> <span class="jsonNull">null</span>
+         },
+         []
+      ]
+   ]
+}</pre>
+      <h4>Response parameters</h4>
+      <div class="paramlist">
+         <div>
+            <span class="paramname">carParkId</span>
+            <span class="paramtypespec">integer</span>
+            <p>Car park ID of the car park.</p>
+         </div>
+         <div>
+            <span class="paramname">name</span>
+            <span class="paramtypespec">string</span>
+            <p>Name of the car park.</p>
+         </div>
+         <div>
+            <span class="paramname">serviceUrl</span>
+            <span class="paramtypespec">string</span>
+            <p>URL of the MOBINET service.</p>
+         </div>
+         <div>
+            <span class="paramname">serviceId</span>
+            <span class="paramtypespec">string</span>
+            <p>ID of the MOBINET service.</p>
+         </div>
+         <div>
+            <span class="paramname">description</span>
+            <span class="paramtypespec">string</span>
+            <p>Description of the car park.</p>
+         </div>
+         <div>
+            <span class="paramname">position</span>
+            <span class="paramtypespec">object</span>
+            <p>Geographical position of the car park in WGS-84 datum. Object contains "lat" and "lon" numeric properties with coordinates in decimal degrees.</p>
+         </div>
+         <div>
+            <span class="paramname">geometry</span>
+            <span class="paramtypespec">object</span>
+            <p>Geographical rectangle specified as <a href="http://geojson.org/geojson-spec.html#multipolygon" target="_blank">GeoJSON MultiPolygon</a> coordinates. The MultiPolygon geometry is an array of individual polygons. Each Polygon is an array of coordinate arrays, where the first is the exterior ring and the following are interior rings.</p>
+         </div>
+         <div>
+            <span class="paramname">timezone</span>
+            <span class="paramtypespec">string</span>
+            <p>Time zone identifier string from zone file of the IANA time zone database. E.g. "Europe/Copenhagen" and "America/New_York".</p>
+         </div>
+         <div>
+            <span class="paramname">cancelGraceSecs</span>
+            <span class="paramtypespec">integer</span>
+            <p>The grace period in seconds from parking session start where cancelling the parking session is allowed.</p>
+         </div>
+         <div>
+            <span class="paramname">openingHours</span>
+            <span class="paramtypespec">array</span>
+            <p>Specification of opening hours. Array of objects with days, from and to properties with the same semantics as for the priceInfo property.</p>
+         </div>
+         <div>
+            <span class="paramname">paymentParking</span>
+            <span class="paramtypespec">boolean</span>
+            <p>Indicates whether parking is free or requires payment (as specified by priceInfo property). A null value indicates that the requirements for payment is unknown.</p>
+         </div>
+         <div>
+            <span class="paramname">paymentManaged</span>
+            <span class="paramtypespec">boolean</span>
+            <p>Indicates whether payment is handled by this service.</p>
+         </div>
+         <div>
+            <span class="paramname">priceInfo</span>
+            <span class="paramtypespec">array</span>
+            <p>Specification of pricing information. Array of objects, each containing the properties listed below. If the from and to times of an entry
+               are reversed, the entry refers to the complementary interval of the specified day(s).
+               </p><ul>
+                  <li><span class="paramname">days</span> <span class="paramtypespec">integer</span>: The days that this entry applies to, encoded as a bitfield, with monday = 2^1 = 0x01 through sunday = 2^7 = 0x40.</li>
+                  <li><span class="paramname">from</span> <span class="paramtypespec">string</span>: The start time of day in the time zone specified by the car park data. Formatted as ISO8601 extended time format HH:MM:SS.</li>
+                  <li><span class="paramname">to</span> <span class="paramtypespec">string</span>: The end time of day in the time zone specified by the car park data. Formatted as ISO8601 extended time format HH:MM:SS.</li>
+                  <li><span class="paramname">currencyCode</span> <span class="paramtypespec">string</span>: The ISO 4217 three letter currency code.</li>
+                  <li><span class="paramname">amount</span> <span class="paramtypespec">numeric</span>: The amount to pay in the indicated currency for the indicated duration of parking.</li>
+                  <li><span class="paramname">duration</span> <span class="paramtypespec">integer</span>: The number of minutes of parking to pay for.</li>
+               </ul>
+            <p></p>
+         </div>
+         <div>
+            <span class="paramname">limitedTimeParking</span>
+            <span class="paramtypespec">boolean</span>
+            <p>Indicates whether parking time is limited (as specified by limitedTimeInformation property). A null value indicates that limitation for parking time is unknown.</p>
+         </div>
+         <div>
+            <span class="paramname">limitedTimeInfo</span>
+            <span class="paramtypespec">array</span>
+            <p>Specification of time limits for parking. Array of objects, each containing the properties listed below. If the from and to times of an entry
+               are reversed, the entry refers to the complementary interval of the specified day(s).
+               </p><ul>
+                  <li><span class="paramname">days</span> <span class="paramtypespec">integer</span>: The days that this entry applies to, encoded as a bitfield, with monday = 2^1 = 0x01 through sunday = 2^7 = 0x40.</li>
+                  <li><span class="paramname">from</span> <span class="paramtypespec">string</span>: The start time of day in the time zone specified by the car park data. Formatted as ISO8601 extended time format HH:MM:SS.</li>
+                  <li><span class="paramname">to</span> <span class="paramtypespec">string</span>: The end time of day in the time zone specified by the car park data. Formatted as ISO8601 extended time format HH:MM:SS.</li>
+                  <li><span class="paramname">duration</span> <span class="paramtypespec">integer</span>: The time limit for parking in minutes.</li>
+               </ul>
+            <p></p>
+         </div>
+         
+         <div>
+            <span class="paramname">parkingSlots</span>
+            <span class="paramtypespec">object</span>
+            <p>Information on parking slots of the car park.</p>
+         </div>
+         <div>
+            <span class="paramname">services</span>
+            <span class="paramtypespec">array</span>
+            <p>Array of strings describing individual services of the car park.</p>
+         </div>
+      </div>
+      
+      
+      
+      
+      <h3>GET /ParkingManager/api/ParkingSessions[/&lt;ID&gt;]</h3>
+      <p>
+      Get list of parking sessions. For users with parking user role, the call returns the users active parking sessions.
+      For users with administrator role or parking attendant role all active parking sessions are returned.
+      </p>
+      <h4>Request body parameters</h4>
+      <p>none</p>
+      <h4>Request query parameters</h4>
+      <div class="paramlist">
+         <div>
+            <span class="paramname">active</span>
+            <span class="paramopt">optional</span>
+            <span class="paramtypespec">boolean</span>
+            <p>If this parameter is not specified, all parking sessions are returned. If set to true or false, only parking sessions with active or non-active state are returned respectively.</p>
+         </div>
+      </div>
+      <h4>Example response body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"fields":</span> [
+      <span class="jsonString">"parkingSessionId"</span>,
+      <span class="jsonString">"userId"</span>,
+      <span class="jsonString">"carParkId"</span>,
+      <span class="jsonString">"carParkName"</span>,
+      <span class="jsonString">"distinguishedSign"</span>,
+      <span class="jsonString">"licensePlate"</span>,
+      <span class="jsonString">"parkTs"</span>,
+      <span class="jsonString">"unparkTs"</span>,
+      <span class="jsonString">"state"</span>,
+      <span class="jsonString">"position"</span>,
+      <span class="jsonString">"positionAccuracy"</span>,
+      <span class="jsonString">"tag"</span>,
+      <span class="jsonString">"price"</span>
+   ],
+   <span class="jsonKey">"parkingSessions":</span> [
+      [
+         <span class="jsonNumber">4</span>,
+         <span class="jsonNumber">2</span>,
+         <span class="jsonNumber">11</span>,
+         <span class="jsonString">"Salling"</span>,
+         <span class="jsonString">"DK"</span>,
+         <span class="jsonString">"FOOBAR5"</span>,
+         <span class="jsonString">"2014-12-04T10:17:27.091Z"</span>,
+         <span class="jsonNull">null</span>,
+         <span class="jsonString">"active"</span>,
+         {
+            <span class="jsonKey">"lat":</span> <span class="jsonNumber">57.062704</span>,
+            <span class="jsonKey">"lon":</span> <span class="jsonNumber">9.884811</span>
+         },
+         <span class="jsonNumber">47</span>,
+         <span class="jsonString">"Shopping in city centre"</span>,
+         {
+            <span class="jsonKey">"currencyCode":</span> <span class="jsonNull">null</span>,
+            <span class="jsonKey">"amount":</span> <span class="jsonNull">null</span>
+         }
+      ]
+   ]
+}</pre>
+      
+
+      
+      <h3>PUT /ParkingManager/api/ParkingSessions</h3>
+      
+      <p>Register a new parking session.</p>
+      
+      <h4>Request body parameters</h4>
+      <div class="paramlist">
+         <div>
+            <span class="paramname">carParkId</span>
+            <span class="paramopt">mandatory</span>
+            <span class="paramtypespec">integer</span>
+            <p>Car park ID of an existing car park entity in the system.</p>
+         </div>
+         <div>
+            <span class="paramname">distinguishedSign</span>
+            <span class="paramopt">mandatory</span>
+            <span class="paramtypespec">string</span>
+            <p>Distinguished sign of the vehicle.</p>
+         </div>
+         <div>
+            <span class="paramname">licensePlate</span>
+            <span class="paramopt">mandatory</span>
+            <span class="paramtypespec">string</span>
+            <p>License plate of the parked vehicle in upper case without spaces.</p>
+         </div>
+         <div>
+            <span class="paramname">position</span>
+            <span class="paramopt">mandatory</span>
+            <span class="paramtypespec">object or string</span>
+            <p>Geographical position of parked vehicle in WGS-84 datum.</p>
+         </div>
+         <div>
+            <span class="paramname">tag</span>
+            <span class="paramopt">optional</span>
+            <span class="paramtypespec">string</span>
+            <p>User specified string.</p>
+         </div>
+      </div>
+      
+      
+      <h4>Response parameters</h4>
+      <div class="paramlist">
+         <div>
+            <span class="paramname">parkingSessionId</span>
+            <span class="paramtypespec">integer</span>
+            <p>Parking ID of the new parking. This must be used when "unparking".</p>
+         </div>
+         <div>
+            <span class="paramname">carParkId</span>
+            <span class="paramtypespec">integer</span>
+            <p>Car park ID as specified in request.</p>
+         </div>
+         <div>
+            <span class="paramname">distinguishedSign</span>
+            <span class="paramtypespec">string</span>
+            <p>Distinguished sign of the vehicle as specified in request.</p>
+         </div>
+         <div>
+            <span class="paramname">licensePlate</span>
+            <span class="paramtypespec">string</span>
+            <p>License plate of the parked in upper case without spaces as specified in request</p>
+         </div>
+         <div>
+            <span class="paramname">parkTs</span>
+            <span class="paramtypespec">string</span>
+            <p>The registered start time of the parking in ISO 8601 extended date time format.</p>
+         </div>
+         <div>
+            <span class="paramname">state</span>
+            <span class="paramtypespec">string</span>
+            <p>State of the parking session. One of 'active', 'cancelled', 'completed'.</p>
+         </div>
+         <div>
+            <span class="paramname">position</span>
+            <span class="paramtypespec">object</span>
+            <p>Geographical position of parked vehicle in WGS-84 datum as specified in request.</p>
+         </div>
+         <div>
+            <span class="paramname">tag</span>
+            <span class="paramtypespec">string</span>
+            <p>User specified string as specified in request.</p>
+         </div>
+      </div>
+      
+      <h4>Example request body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"carParkId":</span> <span class="jsonNumber">11</span>,
+   <span class="jsonKey">"distinguishedSign":</span> <span class="jsonString">"DK"</span>,
+   <span class="jsonKey">"licensePlate":</span> <span class="jsonString">"FO90845"</span>,
+   <span class="jsonKey">"position":</span> {
+      <span class="jsonKey">"lat":</span> <span class="jsonNumber">57.062704</span>,
+      <span class="jsonKey">"lon":</span> <span class="jsonNumber">9.884811</span>
+   },
+   <span class="jsonKey">"positionAccuracy":</span> <span class="jsonNumber">47</span>,
+   <span class="jsonKey">"tag":</span> <span class="jsonString">"Shopping in city centre"</span>
+}</pre>
+
+      <h4>Example response body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"parkingSession":</span> {
+      <span class="jsonKey">"parkingSessionId":</span> <span class="jsonNumber">6</span>,
+      <span class="jsonKey">"carParkId":</span> <span class="jsonNumber">11</span>,
+      <span class="jsonKey">"distinguishedSign":</span> <span class="jsonString">"DK"</span>,
+      <span class="jsonKey">"licensePlate":</span> <span class="jsonString">"FOOBAR99"</span>,
+      <span class="jsonKey">"parkTs":</span> <span class="jsonString">"2014-12-04T10:24:25.836Z"</span>,
+      <span class="jsonKey">"state":</span> <span class="jsonString">"active"</span>,
+      <span class="jsonKey">"position":</span> {
+         <span class="jsonKey">"lat":</span> <span class="jsonNumber">57.062704</span>,
+         <span class="jsonKey">"lon":</span> <span class="jsonNumber">9.884811</span>
+      },
+      <span class="jsonKey">"positionAccuracy":</span> <span class="jsonNumber">47</span>,
+      <span class="jsonKey">"tag":</span> <span class="jsonString">"Shopping in city centre"</span>
+   }
+}</pre>
+      
+      
+      <h3>POST /ParkingManager/api/ParkingSessions</h3>
+      
+      <p>End a users active parking session a.k.a. "unpark". This call is only allowed for users with the parking user role.</p>
+ 
+      <h4>Request body parameters</h4>
+      <div class="paramlist">
+         <span class="paramname">parkingSessionId</span>
+         <span class="paramopt">mandatory</span>
+         <span class="paramtypespec">integer</span>
+         <p>Parking session ID of an active car park entity belonging to the authenticated user.</p>
+         <span class="paramname">cancel</span>
+         <span class="paramopt">optionale</span>
+         <span class="paramtypespec">boolean</span>
+         <p>Specify whether to attempt cancelling the parking session. Cancelling is
+         only allowed within the grace period specified for the car park. If the grace period
+         is expired HTTP status code 412 (Precondition Failed).</p>
+      </div>
+ 
+ 
+      <h4>Example request body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"parkingSessionId":</span> <span class="jsonNumber">7</span>,
+   <span class="jsonKey">"cancel":</span> <span class="jsonBoolean">false</span>
+}</pre>
+
+      <h4>Example response body</h4>
+      <pre class="jsonCode">{
+   <span class="jsonKey">"parkingSession":</span> {
+      <span class="jsonKey">"parkingSessionId":</span> <span class="jsonNumber">7</span>,
+      <span class="jsonKey">"carParkId":</span> <span class="jsonNumber">11</span>,
+      <span class="jsonKey">"distinguishedSign":</span> <span class="jsonString">"DK"</span>,
+      <span class="jsonKey">"licensePlate":</span> <span class="jsonString">"FOOBAR99"</span>,
+      <span class="jsonKey">"parkTs":</span> <span class="jsonString">"2014-12-04T10:24:25.836Z"</span>,
+      <span class="jsonKey">"unparkTs":</span> <span class="jsonString">"2014-12-04T10:26:11.363Z"</span>,
+      <span class="jsonKey">"state":</span> <span class="jsonString">"completed"</span>,
+      <span class="jsonKey">"position":</span> {
+         <span class="jsonKey">"lat":</span> <span class="jsonNumber">57.062704</span>,
+         <span class="jsonKey">"lon":</span> <span class="jsonNumber">9.884811</span>
+      },
+      <span class="jsonKey">"positionAccuracy":</span> <span class="jsonNumber">47</span>,
+      <span class="jsonKey">"tag":</span> <span class="jsonString">"Shopping in city centre"</span>,
+      <span class="jsonKey">"price":</span> {
+         <span class="jsonKey">"currencyCode":</span> <span class="jsonString">"DKK"</span>,
+         <span class="jsonKey">"amount":</span> <span class="jsonString">"0.4690"</span>
+      }
+   }
+}</pre>
+      <p></p>
+ 
+
+ 
+		
+	</body></html>
