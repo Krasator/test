@@ -12,4 +12,7 @@ Run from command prompt:
     echo logpath=C:\data\log\mongo.log > "C:\data\mongod.cfg"
 
 Run from command prompt (as administrator):
-    mongod --config "C:\mongodb\mongod.cfg" --Install
+    mongod --config "C:\data\mongod.cfg" --install
+
+Start the service (as administrator)
+    net start MongoDB

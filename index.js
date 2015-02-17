@@ -5,6 +5,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var app = express();
 
@@ -30,7 +31,9 @@ app.use(cookieParser());
 app.set('port', process.env.PORT || 8000);
 
 
-
+// Connecting to db and loading models
+var db = mongoose.connect('mongodb://localhost/parking');
+require('./models/user.js');
 
 
 // Routes
