@@ -1,0 +1,14 @@
+{
+  "name": "test.gr",
+  "description": "Test simple express server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "*",
+    "cookie-parser": "*",
+    "body-parser": "*"
+  }
+}
