@@ -7,8 +7,10 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "*",
+    "body-parser": "*",
     "cookie-parser": "*",
-    "body-parser": "*"
+    "express": "*",
+    "express-session": "^1.10.3",
+    "mongoose": "^3.8.23"
   }
 }

@@ -1,0 +1,15 @@
+Install mongoDb from internet
+
+it gets install in Program Files
+
+make a folder c:\data
+inside it make folders "db" and "log"
+
+Add to PATH (from my computer):
+    C:\Program Files\Mongo bla bla\bin
+
+Run from command prompt:
+    echo logpath=C:\data\log\mongo.log > "C:\data\mongod.cfg"
+
+Run from command prompt (as administrator):
+    mongod --config "C:\mongodb\mongod.cfg" --Install
