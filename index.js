@@ -33,12 +33,12 @@ app.set('port', process.env.PORT || 8000);
 
 // Connecting to db and loading models
 var db = mongoose.connect('mongodb://localhost/parking');
-require('./models/user.js');
+require('./models/carPark.js');
 
 
 // Routes
-var homeRoute = require('./routes/home-route');
-app.use('/', homeRoute);
+var carParksRoute = require('./routes/carparks-route');
+app.use('/ParkingManager/api/CarParks', carParksRoute);
 
 
 
