@@ -21,14 +21,15 @@ var CarParkSchema = new Schema({
 
     cancelGraceSecs: { type: Number },
 
+    openingHours: {type: String },
+
     paymentParking: { type: Boolean },
 
     paymentManaged: { type: Boolean },
+
+    priceInfo: { type: String },
 
     limitedTimeParking: { type: Boolean },
 
     services: [{ type: String }],
 });
-
-
-module.exports = mongoose.model('CarPark', CarParkSchema);
