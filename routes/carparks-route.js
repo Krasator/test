@@ -27,6 +27,9 @@ router.get('/:id', function(req, res) {
         carPark = carPark.toObject();
         carPark.position = JSON.parse(carPark.position);
         carPark.geometry = JSON.parse(carPark.geometry);
+        carPark.openingHours = JSON.parse(carPark.openingHours);
+        carPark.priceInfo = JSON.parse(carPark.priceInfo);
+        carPark.limitedTimeInfo = JSON.parse(carPark.limitedTimeInfo);
         return res.json(carPark);
         // if (carParkId !== 1) {
         //     return res.json(carPark);
