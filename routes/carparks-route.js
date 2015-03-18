@@ -25,11 +25,16 @@ router.get('/:id', function(req, res) {
         if (err) return res.status(500).json('Could not get car park with id ' + carParkId);
         if (!carPark) return res.status(404).json('Could not find car park with id ' + carParkId);
         carPark = carPark.toObject();
-        carPark.position = JSON.parse(carPark.position);
-        carPark.geometry = JSON.parse(carPark.geometry);
-        carPark.openingHours = JSON.parse(carPark.openingHours);
-        carPark.priceInfo = JSON.parse(carPark.priceInfo);
-        carPark.limitedTimeInfo = JSON.parse(carPark.limitedTimeInfo);
+        if (carPark.position) 
+            carPark.position = JSON.parse(carPark.position);
+        if (carPark.geometry)
+            carPark.geometry = JSON.parse(carPark.geometry);
+        if (carPark.openingHours)       
+            carPark.openingHours = JSON.parse(carPark.openingHours);
+        if (carPark.priceInfo)      
+            carPark.priceInfo = JSON.parse(carPark.priceInfo);
+        if (carPark.limitedTimeInfo)    
+            carPark.limitedTimeInfo = JSON.parse(carPark.limitedTimeInfo);
         return res.json(carPark);
         // if (carParkId !== 1) {
         //     return res.json(carPark);
