@@ -24,6 +24,9 @@ router.get('/:id', function(req, res) {
     CarPark.findOne( { 'id': carParkId }, function(err, carPark) {
         if (err) return res.status(500).json('Could not get car park with id ' + carParkId);
         if (!carPark) return res.status(404).json('Could not find car park with id ' + carParkId);
+        carPark = carPark.toObject();
+        carPark.position = JSON.parse(carPark.position);
+        carPark.geometry = JSON.parse(carPark.geometry);
         return res.json(carPark);
         // if (carParkId !== 1) {
         //     return res.json(carPark);

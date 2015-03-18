@@ -33,3 +33,5 @@ var CarParkSchema = new Schema({
 
     services: [{ type: String }],
 });
+
+module.exports = mongoose.model('CarPark', CarParkSchema);

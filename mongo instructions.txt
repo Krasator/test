@@ -20,3 +20,9 @@ Start the service (as administrator)
 
 To run the service:
 	node index.js
+
+GitHub synch instructions
+Pas sto fakelo tou project
+git add .
+git commit -m "Minima"
+git push -u origin master
