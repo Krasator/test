@@ -31,6 +31,10 @@ var CarParkSchema = new Schema({
 
     limitedTimeParking: { type: Boolean },
 
+    limitedTimeInfo: { type: String},
+
+    parkingSlots: { type: Number},
+
     services: [{ type: String }],
 });
 
